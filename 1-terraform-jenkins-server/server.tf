@@ -15,7 +15,7 @@ data "aws_ami" "latest_ubuntu_image" {
 
 # New Ubuntu instance
 
-resource "aws_instance" "my-server-new" {
+resource "aws_instance" "my-server" {
   ami                         = data.aws_ami.latest_ubuntu_image.id
   instance_type               = var.instance_type
   key_name                    = "jenkins-server-demo"
@@ -25,6 +25,6 @@ resource "aws_instance" "my-server-new" {
   associate_public_ip_address = true
   user_data                   = file("jenkins-script.sh")
   tags = {
-    Name = "${var.env_prefix}-new-server"
+    Name = "${var.env_prefix}-server"
   }
 }
