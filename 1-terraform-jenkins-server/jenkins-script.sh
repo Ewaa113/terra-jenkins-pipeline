@@ -7,7 +7,7 @@ sudo apt install -y wget
 wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo apt-key add -
 sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
 sudo apt update
-sudo apt install -y openjdk-11-jdk
+sudo apt-get install openjdk-21-jdk 
 sudo apt install -y jenkins
 sudo systemctl enable jenkins
 sudo systemctl start jenkins
