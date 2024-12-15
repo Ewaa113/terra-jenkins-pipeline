@@ -1,3 +1,4 @@
+#Script for creating eks cluster
 module "eks" {
     source  = "terraform-aws-modules/eks/aws"
     version = "~> 19.0"
