@@ -1,30 +1,39 @@
 #!/bin/bash
 
-# install jenkins
+# Update system packages
+sudo apt update -y
 
-sudo apt update  
-sudo apt install -y wget
-wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo apt-key add -
-sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
-sudo apt update
-sudo apt-get install openjdk-21-jdk 
+# Install Java (Jenkins requires Java 11 or 17)
+sudo apt install -y openjdk-17-jdk
+
+# Add Jenkins repository and install Jenkins
+sudo wget -q -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt update -y
 sudo apt install -y jenkins
+
+# Enable and start Jenkins service
 sudo systemctl enable jenkins
 sudo systemctl start jenkins
 
-# install git
-
+# Install Git
 sudo apt install -y git
 
-# install terraform
-
-curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-sudo apt update
+# Install Terraform
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
+sudo apt update -y
 sudo apt install -y terraform
 
-# install kubectl
-
-curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.23.6/bin/linux/amd64/kubectl"
+# Install kubectl
+KUBECTL_VERSION="v1.23.6" # Update this version as needed
+curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
 chmod +x ./kubectl
-sudo mv ./kubectl /usr/local/bin/kubectl  
+sudo mv ./kubectl /usr/local/bin/kubectl
+
+# Confirm installations
+java -version
+jenkins --version
+git --version
+terraform -version
+kubectl version --client
