@@ -2,7 +2,7 @@
 
 data "aws_ami" "latest_ubuntu_image" {
   most_recent = true
-  owners      = ["099720109477"]  # Canonical's AWS account ID for Ubuntu AMIs
+  owners      = ["099720109477"] # Canonical's AWS account ID for Ubuntu AMIs
   filter {
     name   = "name"
     values = ["ubuntu/images/hvm-ssd/ubuntu-*-*-amd64-server-*"]
