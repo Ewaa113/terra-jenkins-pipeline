@@ -1,20 +1,20 @@
-# Ubuntu AMI data source
-
+# Ubuntu 22.04 LTS AMI (safe and stable)
 data "aws_ami" "latest_ubuntu_image" {
   most_recent = true
   owners      = ["099720109477"] # Canonical's AWS account ID for Ubuntu AMIs
+
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-*-*-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
   }
+
   filter {
     name   = "virtualization-type"
     values = ["hvm"]
   }
 }
 
-# New Ubuntu instance
-
+# Jenkins EC2 Instance
 resource "aws_instance" "my-server" {
   ami                         = data.aws_ami.latest_ubuntu_image.id
   instance_type               = var.instance_type
@@ -24,7 +24,14 @@ resource "aws_instance" "my-server" {
   availability_zone           = var.availability_zone
   associate_public_ip_address = true
   user_data                   = file("jenkins-script.sh")
+
   tags = {
     Name = "${var.env_prefix}-server"
   }
+}
+
+# Output the public IP of the Jenkins server
+output "jenkins_public_ip" {
+  description = "The public IP address of the Jenkins server"
+  value       = aws_instance.my-server.public_ip
 }
